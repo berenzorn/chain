@@ -24,6 +24,7 @@ class LinkedList:
         self.header = None
         self.tail = None
         self.index = 0
+        self.counter = 0
 
     def length(self):
         return self.index
@@ -33,6 +34,18 @@ class LinkedList:
 
     def is_empty(self):
         return False if self.header is not None else True
+
+    def __iter__(self):
+        self.counter = self.header
+        return self
+
+    def __next__(self):
+        if self.counter is not None:
+            temp = self.counter
+            self.counter = self.counter.next
+            return temp
+        else:
+            raise StopIteration
 
     def append(self, data):
         block = Block(data) if not isinstance(data, Block) else data
@@ -135,3 +148,6 @@ if __name__ == '__main__':
     c.add_transaction('3')
     c.add_block()
     print(c.last_block().data)
+
+    for i in c.chain:
+        print(i.data)
