@@ -1,5 +1,4 @@
 import hashlib
-import json
 from datetime import datetime, timezone, timedelta
 
 
@@ -100,7 +99,7 @@ class Chain:
         block.index = self.chain.get_next_index()
         block.time = self.timestamp()
         block.prev_hash = self.chain.get_tail_hash()
-        block.hash = self.hash(block)
+        block.hash = self.hash(block.data)
         self.chain.append(block)
 
     def add_transaction(self, data):
@@ -110,10 +109,9 @@ class Chain:
         return self.chain.tail
 
     @staticmethod
-    def hash(block):
-        # TODO block.data linked list serialization
-        string = json.dumps(block.data).encode()
-        return hashlib.sha256(string).hexdigest()
+    def hash(linklist):
+        string = ";".join(idx.data for idx in linklist)
+        return hashlib.sha256(string[:-1].encode()).hexdigest()
 
     @staticmethod
     def timestamp():
@@ -124,6 +122,7 @@ class Chain:
 
 
 if __name__ == '__main__':
+    # pass
     # f = LinkedList()
     # print(f.is_empty())
     # f.append(Block('1'))
@@ -142,12 +141,33 @@ if __name__ == '__main__':
     # print(f.find(Block('8')))
     # print(f.find('8'))
 
+    # for i in f:
+    #     print(i.data)
+    #     print(hash(i.data))
+
+
     c = Chain()
     c.add_transaction('1')
     c.add_transaction('2')
     c.add_transaction('3')
     c.add_block()
     print(c.last_block().data)
-
-    for i in c.chain:
+    print(c.last_block().hash)
+    print(c.last_block().prev_hash)
+    for i in c.last_block().data:
         print(i.data)
+
+    c.add_transaction('4')
+    c.add_transaction('5')
+    c.add_transaction('6')
+    c.add_block()
+    print(c.last_block().data)
+    print(c.last_block().hash)
+    print(c.last_block().prev_hash)
+    for i in c.last_block().data:
+        print(i.data)
+
+    #
+    # for i in c.chain:
+    #     print(i.data)
+    #     print(hash(i.data))
