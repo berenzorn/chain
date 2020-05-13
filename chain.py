@@ -3,7 +3,16 @@ from datetime import datetime, timezone, timedelta
 
 
 class Block:
-
+    """
+    Block fields:
+    index from chain,
+    timestamp,
+    data - his transactions list,
+    next - pointer to the next block if exist,
+    prev - pointer to the previous block,
+    hash - sha256 of its transactions list data fields
+    prev_hash - sha256 of the previous block
+    """
     def __init__(self, data):
         self.index = None
         self.time = None
@@ -18,7 +27,13 @@ class Block:
 
 
 class LinkedList:
-
+    """
+    LinkedList fields:
+    header - pointer to the first block
+    tail - pointer to the last block
+    index - how many blocks we have
+    counter - loop iterator from zero to index
+    """
     def __init__(self):
         self.header = None
         self.tail = None
@@ -34,6 +49,10 @@ class LinkedList:
     def is_empty(self):
         return False if self.header is not None else True
 
+    '''
+    Loop iterator
+    '''
+    # TODO iterator from tail to header
     def __iter__(self):
         self.counter = self.header
         return self
@@ -46,6 +65,9 @@ class LinkedList:
         else:
             raise StopIteration
 
+    '''
+    Add new block to the linked list
+    '''
     def append(self, data):
         block = Block(data) if not isinstance(data, Block) else data
         if self.header is None:
@@ -56,6 +78,9 @@ class LinkedList:
         self.tail = block
         self.index += 1
 
+    '''
+    Show all blocks data from the header or vice versa
+    '''
     def show_all(self, reverse=False):
         if reverse:
             print("Checking from tail: ")
@@ -70,9 +95,8 @@ class LinkedList:
                 current.show()
                 current = current.next
 
-    def show_tail(self):
-        current = self.tail
-        current.show()
+    def get_tail(self):
+        return self.tail if self.tail is not None else False
 
     def get_tail_hash(self):
         return self.tail.hash if self.tail is not None else False
@@ -106,7 +130,10 @@ class Chain:
         self.current_trs.append(data)
 
     def last_block(self):
-        return self.chain.tail
+        return self.chain.get_tail()
+
+    def last_block_hash(self):
+        return self.chain.get_tail_hash()
 
     @staticmethod
     def hash(linklist):
@@ -122,52 +149,4 @@ class Chain:
 
 
 if __name__ == '__main__':
-    # pass
-    # f = LinkedList()
-    # print(f.is_empty())
-    # f.append(Block('1'))
-    # f.append(Block('2'))
-    # f.append(Block('3'))
-    # f.show_all()
-    # print(f.is_empty())
-    # f.append('5')
-    # f.append('6')
-    # f.append('7')
-    # f.show_all(reverse=True)
-    # print(f.length())
-    # f.show_tail()
-    # print(f.find(Block('3')))
-    # print(f.find('3'))
-    # print(f.find(Block('8')))
-    # print(f.find('8'))
-
-    # for i in f:
-    #     print(i.data)
-    #     print(hash(i.data))
-
-
-    c = Chain()
-    c.add_transaction('1')
-    c.add_transaction('2')
-    c.add_transaction('3')
-    c.add_block()
-    print(c.last_block().data)
-    print(c.last_block().hash)
-    print(c.last_block().prev_hash)
-    for i in c.last_block().data:
-        print(i.data)
-
-    c.add_transaction('4')
-    c.add_transaction('5')
-    c.add_transaction('6')
-    c.add_block()
-    print(c.last_block().data)
-    print(c.last_block().hash)
-    print(c.last_block().prev_hash)
-    for i in c.last_block().data:
-        print(i.data)
-
-    #
-    # for i in c.chain:
-    #     print(i.data)
-    #     print(hash(i.data))
+    pass
